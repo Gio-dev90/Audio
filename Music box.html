@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Audio </title>
+        <style>
+       
+        .trackbar{ background:#DDD; height:70px; width: 300px; font-family: "Trebuchet MS", Arial, Helvetica, sans-serif; }
+        .trackbar:nth-child(even) { background:#EEE; }
+        .playbutton{ opacity:.8; display:block; float:left; width:40px; height:40px; margin:14px 0px 0px 14px; background:url(play.png) no-repeat; border:none; cursor:pointer; outline:none; }
+        .playbutton:hover{ opacity:1; }
+        .trackname{ float:left; color:#000; margin:12px 0px 0px 14px; font-size:20px; font-weight:bold; }
+        </style>
+        <script>
+        function _(id){
+            return document.getElementById(id);
+        }
+        function audioApp(){
+            var audio = new Audio();
+            var audio_folder = "audio/";
+            var audio_ext = ".mp3";
+            var audio_index = 1;
+            var is_playing = false;
+            var playingtrack;
+            var trackbox = _("trackbox");
+            var tracks = {
+        "track1":["End of the Road", "End Of The Road"],
+		"track2":["Hells Bells", "Hells Bells"],
+        "track3":["Homicide", "Homicide"],
+        "track4":["Tennessee Whiskey","Tennessee Whiskey"],
+        "track5" :["Baby One More Time","Baby One More Time"]
+            };
+            for(var track in tracks){
+                var tb = document.createElement("div");
+                var pb = document.createElement("button");
+                var tn = document.createElement("div");
+                tb.className = "trackbar";
+                pb.className = "playbutton";
+                tn.className = "trackname";
+                tn.innerHTML = audio_index+". "+tracks[track][0];
+                pb.id = tracks[track][1];
+                pb.addEventListener("click", switchTrack);
+                tb.appendChild(pb);
+                tb.appendChild(tn);
+                trackbox.appendChild(tb);
+                audio_index++;
+            }
+            audio.addEventListener("ended",function(){
+                _(playingtrack).style.background = "url(play.png)";
+                playingtrack = "";
+                is_playing = false;
+            });
+            function switchTrack(event){
+                if(is_playing){
+                    if(playingtrack != event.target.id){
+                        is_playing = true;
+                        _(playingtrack).style.background = "url(play.png)";
+                        event.target.style.background = "url(pause.png)";
+                        audio.src = audio_folder+event.target.id+audio_ext;
+                        audio.play();
+                    } else {
+                        audio.pause();
+                        is_playing = false;
+                        event.target.style.background = "url(play.png)";
+                    }
+                } else {
+                    is_playing = true;
+                    event.target.style.background = "url(pause.png)";
+                    if(playingtrack != event.target.id){
+                        audio.src = audio_folder+event.target.id+audio_ext;
+                    }
+                    audio.play();
+                }
+                playingtrack = event.target.id;
+            }
+        }
+        window.addEventListener("load", audioApp);
+     
+     
+      </script>
+        </head>
+<body style="background-color: lightblue;">
+
+    <h1 style="color: lightcoral;"> My Playlist </h1>
+   
+    <div id="trackbox"></div>  
+    
+</body>
+</html>
